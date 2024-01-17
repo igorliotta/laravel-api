@@ -6,6 +6,9 @@
     <div class="container">
         <div class="card mx-auto p-3 my-3" style="width: 18rem;">
             <div class="card-body">
+              @if($project->cover_image)
+                            <img  class='w-100' src="{{ asset('storage/' . $project->cover_image) }}" alt="">
+              @endif
               <h2 class="card-title">{{ $project->title }}</h2>
               @if ($project->type)
               <p class="card-text"><strong>{{ $project->type->name }}</strong></p>

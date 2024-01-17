@@ -9,13 +9,18 @@
 </section>
 <section>
     <div class="container">
-        <form action="{{ route('admin.projects.store') }}" method="POST">
+        <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data">
       
             @csrf
             
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Titolo del progetto" value="{{ old('title') }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="cover_image" class="form-label">Carica File</label>
+                <input class="form-control" type="file" name="cover_image" id="cover_image" value="{{ old('cover_image') }}">
             </div>
 
             {{-- @dump($types) --}}

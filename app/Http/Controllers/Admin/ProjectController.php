@@ -9,6 +9,7 @@ use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -44,11 +45,18 @@ class ProjectController extends Controller
             'title' => 'required|max:255|string|unique:projects',
             'content' => 'nullable|min:5|string',
             'type_id' => 'nullable|exists:types,id',
-            'technologies' => 'exists:technologies,id'
+            'technologies' => 'exists:technologies,id',
+            'cover_image' =>'nullable|file|max:2048|mimes:jpeg,png,jpg,gif'
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
+
+        if ($request->hasFile('cover_image')) {
+            $file_path = Storage::put('images',$request->cover_image);
+
+            $data['cover_image'] = $file_path;
+        }
 
         $project = Project::create($data);
 
@@ -87,7 +95,8 @@ class ProjectController extends Controller
             'title' => ['required','max:255', 'string', Rule::unique('projects')->ignore($project->id)],
             'content' => 'nullable|min:5|string',
             'type_id' => 'nullable|exists:types,id',
-            'technologies' => 'exists:technologies,id'
+            'technologies' => 'exists:technologies,id',
+            'cover_image' =>'nullable|file|max:2048|mimes:jpeg,png,jpg,gif'
         ]);
 
         $data = $request->all();
@@ -95,6 +104,17 @@ class ProjectController extends Controller
         // if($project->title !== $data['title']) {
 
             $data['slug'] = Str::slug($data['title'], '-');
+
+            if ($request->hasFile('cover_image')) {
+                $file_path = Storage::put('images',$request->cover_image);
+    
+                $data['cover_image'] = $file_path;
+    
+                // elimino il file precedente se sto salvando una nuova copertina
+                if($project->cover_image) {
+                    Storage::delete($project->cover_image);
+                }
+            }
 
         // }
 
